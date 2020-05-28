@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="10.0.0.210" id="f2d64377-7ace-4838-ac83-7f66af570ffa" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="8e8098ea-dd0e-4eff-a2c2-8ce799e84bba" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="b714a8dd-91af-42b8-8492-836471e31607" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="2ac788c2-67d4-4d20-ac53-415d08ce1542" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="9471231d-b032-4b54-b64d-bb2ad6fba4cc" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="bef5254c-7c4b-4edb-90ac-a41f04b0c4a4" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="f1bb479e-0d00-446b-b914-b5c9efc77162" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="2caf8e1f-253a-460c-8f71-49200d644b85" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="f8198786-579b-4a3b-a023-6effff7823a1" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="3cb4b2ba-367b-46a0-84d2-1e74fa89870f" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+      <sshConfig host="10.0.0.210" id="9d47fb10-d0f6-42d0-8e67-d00673795a7a" keyPath="C:\Users\Administrator\.ssh\id_rsa" port="22" customName="10.0.0.210" nameFormat="CUSTOM" />
+    </configs>
+  </component>
+</project>

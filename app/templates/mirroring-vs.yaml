@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: name
+spec:
+  hosts:
+    - host
+  http:
+    - route:
+        - destination:
+            host: host
+            subset: v1
+          weight: 100
+      mirror:
+        host: host
+        subset: v2
+      mirror_percent: 100

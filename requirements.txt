@@ -1,0 +1,6 @@
+dateutil
+djangorestframework
+kubernetes
+django
+PyYAML
+requests
