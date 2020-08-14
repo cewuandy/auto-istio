@@ -16,9 +16,10 @@ from rest_framework.decorators import action
 from rest_framework.parsers import JSONParser
 from rest_framework.viewsets import ModelViewSet
 
-host = "https://10.0.0.210:6443/"
-dr_url = "apis/networking.istio.io/v1alpha3/namespaces/default/destinationrules/"
-vs_url = "apis/networking.istio.io/v1alpha3/namespaces/default/virtualservices/"
+config.load_kube_config()
+host = client.CoreV1Api().api_client.configuration.host
+dr_url = "/apis/networking.istio.io/v1alpha3/namespaces/default/destinationrules/"
+vs_url = "/apis/networking.istio.io/v1alpha3/namespaces/default/virtualservices/"
 
 
 class AutoIstioApi(ModelViewSet):
@@ -58,7 +59,6 @@ class AutoIstioApi(ModelViewSet):
 
         config.kube_config.load_kube_config()
         v1 = client.CoreV1Api()
-        v1beta1 = client.ExtensionsV1beta1Api()
 
         service = v1.read_namespaced_service(name=request_data['host'], namespace='default')
         pod_ret = v1.list_namespaced_pod(namespace='default',
@@ -180,7 +180,41 @@ class PodInfo:
 def get_token():
     config.load_kube_config()
     v1 = client.CoreV1Api()
-    secret = v1.read_namespaced_secret(namespace='default', name="default-token-dnr7h")
+    rbac_v1 = client.RbacAuthorizationV1Api()
+    try:
+        v1.read_namespace(name="auto-istio", pretty=True)
+    except client.rest.ApiException:
+        metadata = {"name": "auto-istio"}
+        namespace = client.V1Namespace(api_version="v1", kind="Namespace",
+                                       metadata=metadata)
+        v1.create_namespace(namespace)
+
+    try:
+        rbac_v1.read_cluster_role_binding(name="auto_istio_binding", pretty=True)
+    except client.rest.ApiException:
+        metadata = {"name": "auto_istio_binding"}
+        subjects = [
+            {
+                "kind": "ServiceAccount",
+                "name": "default",
+                "namespace": "auto-istio"
+            }
+        ]
+        role_ref = {
+            "kind": "ClusterRole",
+            "name": "cluster-admin",
+            "apiGroup": "rbac.authorization.k8s.io"
+        }
+        cluster_role_binding = client.V1ClusterRoleBinding(
+            api_version="rbac.authorization.k8s.io/v1",
+            kind="ClusterRoleBinding",
+            metadata=metadata,
+            subjects=subjects,
+            role_ref=role_ref)
+        rbac_v1.create_cluster_role_binding(cluster_role_binding)
+
+    service_account = v1.read_namespaced_service_account(namespace="auto-istio", name="default")
+    secret = v1.read_namespaced_secret(namespace='auto-istio', name=service_account.secrets[0].name)
     return base64.b64decode(secret.data['token']).decode("utf-8")
 
 
@@ -223,10 +257,11 @@ def create_traffic_shifting_vs(request_data, sorted_version, new_version_weight)
 
 
 def canary_release_threading(request_data, new_pod_name, new_pod_timestamp, sorted_version):
+    print("threading start")
     v1 = client.CoreV1Api()
     v1beta1 = client.ExtensionsV1beta1Api()
     successes = 0
-    while successes < 10:
+    while successes < request_data['mirroringSucceedTimes']:
         successes = 0
         failed = 0
         now_time = datetime.datetime.now()
@@ -244,7 +279,7 @@ def canary_release_threading(request_data, new_pod_name, new_pod_timestamp, sort
             start_mark = re.compile(
                 '^\\[([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-9]|2[0-3]):'
                 '([0-5][0-9]):([0-5][0-9]|60)(\\.[0-9]+)?(([Zz])|([+|-]([01][0-9]|2[0-3]):'
-                '[0-5][0-9]))\\]$')
+                '[0-5][0-9]))\\]$') # Log Header
             line_list = line.split(" ")
             if start_mark.match(line_list[0]):
                 if http_2xx_pattern.match(line_list[4]):
@@ -270,11 +305,11 @@ def canary_release_threading(request_data, new_pod_name, new_pod_timestamp, sort
     new_deployment.spec.replicas = old_deployment.spec.replicas
     v1beta1.patch_namespaced_deployment(new_deployment.metadata.name, "default", new_deployment)
 
-    time.sleep(10)
-    for i in range(101):
-        print(i)
-        create_traffic_shifting_vs(request_data, sorted_version, i)
-        time.sleep(1)
+    for i in range(0, int(100 / request_data['trafficShiftingPercent']), 1):
+        create_traffic_shifting_vs(request_data,
+                                   sorted_version,
+                                   (i + 1) * request_data['trafficShiftingPercent'])
+        time.sleep(request_data['trafficShiftingPerSecond'])
 
     old_deployment.spec.replicas = 0
     v1beta1.patch_namespaced_deployment(old_deployment.metadata.name, "default", old_deployment)

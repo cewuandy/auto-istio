@@ -28,8 +28,7 @@ urlpatterns = [
     url(r'^istio/canary_release',
         AutoIstioApi.as_view({
             'post': 'create_canary_release'})),
-    url(r'^istio/retries',
+    url(r'^istio/retry_policy',
         AutoIstioApi.as_view({
             'post': 'create_retry_policy'}))
-
 ]

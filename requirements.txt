@@ -1,6 +1,6 @@
-dateutil
+Django==2.2
 djangorestframework
-kubernetes
-django
-PyYAML
-requests
+kubernetes==10.0.0
+PyYAML==5.1.1
+requests==2.21.0
+dateutil

@@ -1,0 +1,25 @@
+stages:
+  - build
+  - deploy
+
+build:
+  image: docker:stable-dind
+  stage: build
+  script:
+    - git clone https://gitlab.com/cewuandy/auto_istio
+    - cd auto_istio
+    - docker login registry.gitlab.com
+    - docker build -t registry.gitlab.com/cewuandy/auto_istio .
+    - docker push registry.gitlab.com/cewuandy/auto_istio
+  environment:
+    name: test_abc
+
+
+deploy:
+  image: bitnami/kubectl:latest
+  stage: deploy
+  script:
+    - export KUBE_CONFIG=$CONFIG_FILE
+    - git clone https://gitlab.com/cewuandy/auto_istio
+    - cd auto_istio
+    - kubectl apply -f auto_istio.yaml

@@ -2,12 +2,11 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="c002f63c-1771-45e0-8b53-606c3605ea1f" name="10.0.0.210" url="http://10.0.0.210">
-        <fileTransfer host="10.0.0.210" port="22" privateKey="C:\Users\Administrator\.ssh\id_rsa" accessType="SFTP" keyPair="true">
+      <webServer id="5a3ac861-af56-4907-a166-b4db915d4229" name="b3-1" url="http://0.0.0.0">
+        <fileTransfer accessType="SFTP" host="10.0.0.210" port="22" sshConfigId="1d66578f-5d5c-42a4-86b7-fbeb0accbb24" sshConfig="B3-1" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="22" />
         </fileTransfer>
       </webServer>
     </option>

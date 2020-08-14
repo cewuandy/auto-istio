@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auto_istio
+  namespace: auto-istio
+spec:
+  selector:
+    matchLabels:
+      app: auto_istio
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: auto_istio
+    spec:
+      containers:
+        - name: auto_istio
+          image: registry.gitlab.com/cewuandy/auto_istio
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auto_istio
+spec:
+  type: ClusterIP
+  ports:
+    - name: api-server
+      port: 8000
+  selector:
+    app: auto_istio
